@@ -1,14 +1,14 @@
 from Asset import Asset
 
-dic = {"Music" : [["Spotify", "SPOT"], ["Tencent Music", "TME"], ["Vivendi", "VIV"]],
-       "Fashion" : [["Gold", "GOLD"], ["Gap", "GPS"], ["Nike", "NKE"]],
-       "Entertainment" : [["The Walt Disney Company", "DIS"], ["Netflix", "NFLX"], ["Six Flags", "SIX"]],
-       "Sports" : [["Under Armour", "UA"], ["Electronic Arts Inc", "EA"], ["Dick's Sporting Goods", "DKS"]],
-       "Technology" : [["Alphabet Inc", "GOOGL"], ["Tesla", "TSLA"], ["Amazon", "AMZN"]]
-       }
-if __name__ == '__main__':
-       for x in dic:
+interest_stocks = {"Music" : [["Spotify", "SPOT", 2], ["Tencent Music", "TME", 1], ["Vivendi", "VIV", 2]],
+       "Fashion" : [["Gold", "GOLD", 5], ["Gap", "GPS", 4], ["Nike", "NKE", 1]],
+       "Entertainment" : [["The Walt Disney Company", "DIS", 1], ["Netflix", "NFLX", 0], ["Six Flags", "SIX", 3]],
+       "Sports" : [["Under Armour", "UA", 2], ["Electronic Arts Inc", "EA", 4], ["Dick's Sporting Goods", "DKS", 1]],
+       "Technology" : [["Alphabet Inc", "GOOGL", 2], ["Tesla", "TSLA", 3], ["Amazon", "AMZN", 0]]
+                   }
+def interest_function():
+       for x in interest_stocks:
               print(x)
-              for i in range(len(dic[x])):
-                     print(dic[x][i])
-                     dic[x][i] = Asset(dic[x][i][0], dic[x][i][1])
+              for i in range(len(interest_stocks[x])):
+                     print(interest_stocks[x][i])
+                     interest_stocks[x][i] = Asset(interest_stocks[x][i][0], interest_stocks[x][i][1])

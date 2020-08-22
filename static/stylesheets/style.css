@@ -48,6 +48,18 @@ body {
     padding: 20px;
 }
 
+.interests-grid {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto ;
+    gap: 20px;
+    padding: 20px;
+}
+
+.grid-header {
+    grid-row: 1 / span 3;
+}
+
 .stock > * {
     margin-top: 10px;
     margin-bottom: 10px;

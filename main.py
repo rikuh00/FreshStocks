@@ -5,7 +5,8 @@ from form_config import Config
 from execute_order import execute_order
 
 from stock_form import StockForm
-from stock_suggestion import dic
+from stock_suggestion import interest_stocks
+from stock_suggestion import interest_function
 
 
 app = Flask(__name__)
@@ -22,12 +23,28 @@ def index():
     form = StockForm()
     return render_template('index.html', title='Home', asset_list=asset_list, form=form)
 
-@app.route('/Interests', methods=['GET', 'POST'])
+@app.route('/interests', methods=['GET', 'POST'])
 def music_page():
+    '''
+
+    :return:
+    '''
     initial_cash = 500
     form = StockForm()
-    asset_list = execute_order(initial_cash, dic)
-    return render_template('interests.html', title='Interests', asset_list=asset_list, form=form)
+    music_list = execute_order(initial_cash, interest_stocks['Music'])
+    fashion_list = execute_order(initial_cash, interest_stocks['Fashion'])
+    entertainment_list = execute_order(initial_cash, interest_stocks['Entertainment'])
+    sports_list = execute_order(initial_cash, interest_stocks['Sports'])
+    technology_list = execute_order(initial_cash, interest_stocks['Technology'])
+    print(interest_stocks)
+
+    return render_template('interests.html', title='Interests',
+                           music_list=music_list,
+                           fashion_list=fashion_list,
+                           entertainment_list=entertainment_list,
+                           sports_list=sports_list,
+                           technology_list=technology_list,
+                           form=form)
 
 app.run(debug=True)
 
