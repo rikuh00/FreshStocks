@@ -1,5 +1,5 @@
 from datetime import datetime as dt, timedelta
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from form_config import Config
 from execute_order import execute_order
 from stock_form import StockForm
@@ -18,10 +18,13 @@ def index():
     asset_list = execute_order(initial_cash, asset_list)
 
     form = StockForm()
+
+    if form.validate_on_submit():
+        return redirect('/interests')
     return render_template('index.html', title='Home', asset_list=asset_list, form=form)
 
 @app.route('/interests', methods=['GET', 'POST'])
-def music_page():
+def interests_page():
     '''
 
     :return:
@@ -34,6 +37,9 @@ def music_page():
     sports_list = execute_order(initial_cash, interest_stocks['Sports'])
     technology_list = execute_order(initial_cash, interest_stocks['Technology'])
     print(interest_stocks)
+
+    if form.validate_on_submit():
+        return redirect('/index')
 
     return render_template('interests.html', title='Interests',
                            music_list=music_list,

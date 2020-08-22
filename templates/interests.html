@@ -26,8 +26,8 @@
                 <div class="interests-grid">
                     <div class="grid-header"> <h1>Music</h1> </div>
                     <div class="grid-stock">
+                        {% for stock in music_list %}
                         <div>
-                            {% for stock in music_list %}
                             <h2>{{ stock[0].name }}</h2>
                             <p>{{ stock[1] }}</p>
                         </div>
