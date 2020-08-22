@@ -6,9 +6,9 @@ dic = {"Music" : [["Spotify", "SPOT"], ["Tencent Music", "TME"], ["Vivendi", "VI
        "Sports" : [["Under Armour", "UA"], ["Electronic Arts Inc", "EA"], ["Dick's Sporting Goods", "DKS"]],
        "Technology" : [["Alphabet Inc", "GOOGL"], ["Tesla", "TSLA"], ["Amazon", "AMZN"]]
        }
-
-for x in dic:
-       print(x)
-       for i in range(len(dic[x])):
-              print(dic[x][i])
-              dic[x][i] = Asset(dic[x][i][0], dic[x][i][1])
+if __name__ == '__main__':
+       for x in dic:
+              print(x)
+              for i in range(len(dic[x])):
+                     print(dic[x][i])
+                     dic[x][i] = Asset(dic[x][i][0], dic[x][i][1])
