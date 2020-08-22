@@ -29,11 +29,17 @@ class Asset():
         self.ema = self.price[["close"]].copy().ewm(span=10).mean()
         self.ema.rename(columns={'close': 'ema_value'}, inplace=True)
 
-    def exp_ma_strat(self): #REQUIRES FIXING
+    def exp_ma_strat(self):
         signals = self.price[["close"]].copy()
-        signals["ema_value"] = self.ema["ema_value"]
-        signals["position"] = np.where((signals['close'][-3] > self.ema["ema_value"][-3]) &
-                                       (print("{:.2f}".format(round(signals["close"]*1.01, 2)))), "-1", "1")
+        signals["ema_value"] = self.ema["ema_value"].copy()
+        if (signals['close'][-5] > self.ema["ema_value"][-5]) and (signals['close'][-1] < signals["ema_value"][-1]):
+            signals["position"] = -1
+        elif (signals['close'][-5] < self.ema["ema_value"][-5]) and (signals['close'][-1] > signals["ema_value"][-1]):
+            signals["position"] = 1
+        elif (signals['close'][-5] - self.ema["ema_value"][-5]) >= (signals['close'][-1] - signals["ema_value"][-1]):
+            signals["position"] = 1
+        elif (signals['close'][-5] - self.ema["ema_value"][-5]) < (signals['close'][-1] - signals["ema_value"][-1]):
+            signals["position"] = -1
         return signals
 
     def simple_long_ma_strat(self):
@@ -55,6 +61,7 @@ class Asset():
         signals['position'] = signals['position'].diff() #1 for buy, -1 for sell
         return signals
 
+    #ADD EXPONENTIAL MA
     def execute_strats(self, initial_cash):
         strat_dict = {self.simple_long_ma_strat:'Long MA', self.golden_cross_strat: 'Golden Cross', self.bollinger_strat: 'Bollinger'}
         strat = None
@@ -101,4 +108,5 @@ class Asset():
 
 
 data = Asset("TESLA", "TSLA")
+data.set_ema()
 print(data.exp_ma_strat())
