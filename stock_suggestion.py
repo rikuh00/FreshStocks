@@ -10,4 +10,3 @@ dic = {"Music" : [["Spotify", "SPOT"], ["Tencent Music", "TME"], ["Vivendi", "VI
 for x in dic:
        for i in range(len(dic[x])):
               dic[x][i] = Asset(dic[x][i][0], dic[x][i][1])
-              print("good")
