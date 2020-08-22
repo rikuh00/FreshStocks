@@ -40,6 +40,8 @@ class Asset():
             signals["position"] = 1
         elif (signals['close'][-5] - self.ema["ema_value"][-5]) < (signals['close'][-1] - signals["ema_value"][-1]):
             signals["position"] = -1
+        else:
+            signals["position"] = 0
         return signals
 
     def simple_long_ma_strat(self):
