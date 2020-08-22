@@ -1,4 +1,6 @@
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from datetime import datetime as dt, timedelta
 
 from load_data import load_data
@@ -143,8 +145,18 @@ class Asset():
             if initial_cash > price:
                 num_shares = initial_cash // price
                 if num_shares > 1:
-                    return('Buy up to {} shares at ${:.2f} each'.format(num_shares, price))
+                    return('Buy up to {:.0f} shares at ${:.2f} each'.format(num_shares, price))
                 else:
                     return('Buy 1 share at ${:.2f}'.format(price))
 
-
+    def plot_projections(self):
+        plt.close()
+        self.returns = self.price[['close']].copy()
+        self.returns['returns'] = (self.returns.close/self.returns.close.shift(1)) - 1
+        avg_return = self.returns.returns.mean()
+        std_return = self.returns.returns.std()
+        self.fut_returns = pd.DataFrame({'date':pd.date_range(start=dt.today(), end=dt.today()+timedelta(days=180))})
+        self.fut_returns['max_return'] = [self.price['close'].iloc[-1] * ((1+(avg_return + 2*std_return))) ** i for i in range(len(self.fut_returns))]
+        self.fut_returns.set_index('date', drop=True, inplace=True)
+        self.fut_returns.plot()
+        plt.savefig('static.png')
