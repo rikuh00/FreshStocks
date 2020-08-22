@@ -29,7 +29,7 @@ class Asset():
         look_back = 10
         self.ema = self.price[['close']].copy().ewm(span=look_back).mean() #Exponential WA
         self.ema.rename(columns={'close': 'ema'}, inplace=True)
-        self.ema = self.ema.join(self.price[['close']])
+        self.ema = self.price[['close']].join(self.ema, how='left')
 
     def exp_ma_strat(self):
         signals = self.price[['close']].copy()
@@ -136,15 +136,15 @@ class Asset():
         instruction, price = self.find_best_strat(initial_cash)
         if instruction == 'sell':
             if asset_level > 0:
-                print('Sell {} at ${:.2f}'.format(self.name, price)) 
+                return ('Sell at ${:.2f}'.format(price)) 
             else:
-                print('We suggest that you wait until prices drop to buy this security.')
+                return('We suggest that you wait until prices drop to buy this security.')
         elif instruction == 'buy':
             if initial_cash > price:
                 num_shares = initial_cash // price
                 if num_shares > 1:
-                    print('Buy up to {} shares of {} at ${:.2f} each'.format(num_shares, self.name, price))
+                    return('Buy up to {} shares at ${:.2f} each'.format(num_shares, price))
                 else:
-                    print('Buy 1 share of {} at ${:.2f}'.format(self.name, price))
+                    return('Buy 1 share at ${:.2f}'.format(price))
 
 

@@ -87,6 +87,7 @@ def load_data(ticker, start_date, end_date):
     df = df.astype(float)
     df = df[['high','low','Close']]
     df.rename(columns={'Close':'close'}, inplace=True)
+    df = df[~df.index.duplicated(keep='first')]
     return df
 
 #%% MAIN
