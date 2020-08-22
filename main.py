@@ -1,11 +1,10 @@
 from datetime import datetime as dt, timedelta
 from Asset import Asset
 if __name__ == '__main__':
-    end_date = dt.today()
-    start_date = end_date - timedelta(days=50)
-    lulu = Asset('Lululemon','LULU', start_date, end_date)
-    print(lulu.name)
+
+    lulu = Asset('Lululemon','LULU')
     #print(lulu.close.tail())
     lulu.set_ma()
-    lulu.simple_long_ma()
+    lulu.set_bollinger()
+    lulu.execute_strats(500)
     #print(lulu.ma.tail())

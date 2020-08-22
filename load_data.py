@@ -96,4 +96,3 @@ if __name__ == '__main__':
     end_date = datetime.now()
     start_date = end_date - timedelta(days=50)
     df = load_data(ticker, start_date, end_date)
-    print(df.head())
