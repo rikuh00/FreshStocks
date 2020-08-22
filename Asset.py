@@ -12,7 +12,7 @@ class Asset():
 
     def set_bollinger(self):
         bollinger_avg = 20 #number of days for the moving average
-        std_limit = 2 #upper and lower limit for standard dev
+        std_limit = 1 #upper and lower limit for standard dev
         self.bollinger = self.price[['close']].copy()
         self.bollinger['tp'] = self.price[['high','low','close']].mean(axis=1) #typical price (see Investopedia)
         self.bollinger['ma'] = self.bollinger.tp.rolling('{}D'.format(bollinger_avg)).mean() #moving average
@@ -46,18 +46,43 @@ class Asset():
 
 
     def execute_strats(self, initial_cash):
-        strat_list = [self.simple_long_ma_strat, self.golden_cross_strat, self.bollinger_strat]
-        strat_list = [self.simple_long_ma_strat]
-        return_list = []
-        for strat in strat_list:
-            signals = strat()
+        strat_dict = {self.simple_long_ma_strat:'Long MA', self.golden_cross_strat: 'Golden Cross', self.bollinger_strat: 'Bollinger'}
+        strat = None
+        final_return = None
+        final_signal = None
+
+        for _strat in strat_dict:
+            _signal = _strat()
             cash_list = [initial_cash] #cash levels
-            for i in range(1,len(signals)):
-                cash = cash_list[i-1] - (signals.close[i] * signals.position[i]) #reduces/increases cash for buy/sell
-                if cash < 0:
-                    cash = cash_list[i-1] #don't do anything that makes you short cash
-                    signals.position.iloc[i] = 0
+            for i in range(1,len(_signal)):
+                cash = cash_list[i-1] - (_signal.close[i] * _signal.position[i]) #reduces/increases cash for buy/sell
                 cash_list.append(cash)
-            signals['cash'] = cash_list
-            final_return = signals['cash'].iloc[-1] + (signals['close'] * signals['position']).iloc[-1]
-            
+            _signal['cash'] = cash_list
+            _return = _signal['cash'].iloc[-1] + ((_signal['close'] * _signal['position']).iloc[-1])
+            if final_return is None or _return > final_return:
+                    final_return = _return
+                    final_signal = _signal
+                    strat = strat_dict[_strat]
+        print('The best strategy is {}'.format(strat))
+        if strat == 'Long MA':
+            curr_price = self.ma.close.iloc[-1]
+            avg = self.ma.long_ma.iloc[-1]
+            if curr_price > avg:
+                print('Sell {} at ${:.2f}'.format(self.name, avg))
+            elif curr_price < avg:
+                print('Buy {} at ${:.2f}'.format(self.name, avg))
+        
+        elif strat == 'Golden Cross':
+            curr_price = self.ma.close.iloc[-1]
+            long_avg = self.ma.long_ma.iloc[-1]    
+            short_avg = self.ma.short_ma.iloc[-1]
+            print('Buy at ${:.2f} or Sell at ${:.2f}'.format(min(long_avg, short_avg), max(long_avg, short_avg)))
+        
+        elif strat == 'Bollinger':
+            curr_price = self.bollinger.close.iloc[-1]
+            u_lim = self.bollinger.u_lim.iloc[-1]    
+            l_lim = self.bollinger.l_lim.iloc[-1]
+            if abs(curr_price - u_lim) > abs(curr_price - l_lim):
+                print('Buy at ${:.2f}'.format(l_lim))
+            else:
+                print('Sell at ${:.2f}'.format(u_lim))         
