@@ -1,13 +1,10 @@
 from datetime import datetime as dt, timedelta
 from flask import Flask, render_template
 from form_config import Config
-
 from execute_order import execute_order
-
 from stock_form import StockForm
 from stock_suggestion import interest_stocks
 from stock_suggestion import interest_function
-
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
