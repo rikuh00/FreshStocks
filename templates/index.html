@@ -15,15 +15,12 @@
             <div class="header">
                 <h1>My Dashboard</h1>
             </div>
-            <div class="stock-buttons">
-                <form action="" method="post" novalidate>
-                    {{ form.hidden_tag() }}
-                    <p>{{ form.music() }} {{ form.fashion() }} {{ form.entertainment() }} {{ form.sports() }} {{ form.technology() }}</p>
-                </form>
-
-            </div>
             <div class="left">
                 Left
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <p>{{ form.interests() }}</p>
+                </form>
             </div>
             <div class="main">
                 <div class="stock-grid">

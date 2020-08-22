@@ -65,10 +65,14 @@ def _scrape_page_helper(ticker, begin_100days, end_100days):
     page = requests.get(url, headers=header)
     element_html = html.fromstring(page.content)
     table = element_html.xpath('//table')
-    table_tree = lxml.etree.tostring(table[0], method='xml')
-    df = (pd.read_html(table_tree))[0]
-    df.drop(index = len(df)-1, inplace=True)
-    return df
+    try:
+        table_tree = lxml.etree.tostring(table[0], method='xml')
+        df = (pd.read_html(table_tree))[0]
+        df.drop(index = len(df)-1, inplace=True)
+        return df
+    except:
+        print('Error')
+        return None
 
 #%% SCRAPE WEBPAGE
 def load_data(ticker, start_date, end_date):

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Raleway:400,800">
+    <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/style.css') }}">
+    <link href="{{ url_for('static',filename='img/favicon.ico') }}" rel="shortcut icon"/>
+</head>
+<body>
+    <div class="parent">
+            <div class="header">
+                <h1>Interests</h1>
+            </div>
+            <div class="left">
+                Left
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <p>{{ form.home() }}</p>
+                </form>
+            </div>
+            <div class="main">
+                <div class="stock-grid">
+                    <div class="music">
+                        {% for stock in asset_list[0] %}
+                        <div>
+                            <h1>{{ stock[0].name }}</h1>
+                            <p>{{ stock[1] }}</p>
+                        </div>
+                        {% endfor% }
+                    </div>
+                    <div class="fashion">
+                        {% for stock in asset_list[1] %}
+                        <div>
+                            <h1>{{ stock[0].name }}</h1>
+                            <p>{{ stock[1] }}</p>
+                        </div>
+                        {% endfor% }
+                    </div>
+                    <div class="entertainment">
+                        {% for stock in asset_list[2] %}
+                        <div>
+                            <h1>{{ stock[0].name }}</h1>
+                            <p>{{ stock[1] }}</p>
+                        </div>
+                        {% endfor% }
+                    </div>
+                    <div class="sports">
+                        {% for stock in asset_list[3] %}
+                        <div>
+                            <h1>{{ stock[0].name }}</h1>
+                            <p>{{ stock[1] }}</p>
+                        </div>
+                        {% endfor% }
+                    <div class="technology">
+                        {% for stock in asset_list[4] %}
+                        <div>
+                            <h1>{{ stock[0].name }}</h1>
+                            <p>{{ stock[1] }}</p>
+                        </div>
+                        {% endfor% }
+                    </div>
+
+                </div>
+            </div>
+            <div class="right">
+                Right
+            </div>
+            <div class="footer">
+                Footer
+            </div>
+        </div>
+</body>
+</html>
