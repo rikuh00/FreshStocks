@@ -31,7 +31,7 @@ class Asset():
 
     def exp_ma_strat(self): #REQUIRES FIXING
         signals = self.price[["close"]].copy()
-        signals["ema_value"] = set_ema
+        signals["ema_value"] = self.ema["ema_value"]
         signals["position"] = np.where((signals['close'][-3] > self.ema["ema_value"][-3]) &
                                        (print("{:.2f}".format(round(signals["close"]*1.01, 2)))), "-1", "1")
         return signals
