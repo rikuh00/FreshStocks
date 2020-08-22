@@ -8,6 +8,7 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Raleway:400,800">
     <link rel="stylesheet" href="{{ url_for('static',filename='stylesheets/style.css') }}">
+    <link rel="stylesheet" href="C:\Users\Riku\Desktop\Hackthe6ix\static\stylesheets\style.css">
 </head>
     <body>
         <div class="parent">
@@ -20,9 +21,21 @@
             <div class="main">
                 <div class="stock-grid">
                     <div class="stock">
-                        <h1>{{ asset.name }}</h1>
-                        <p>{{ order }}</p>
+                        <h1>{{ asset_list[0][0].name }}</h1>
+                        <p>{{ asset_list[0][1] }}</p>
                     </div>
+                    <div class="stock">
+                        <h1>{{ asset_list[1][0].name }}</h1>
+                        <p>{{ asset_list[1][1] }}</p>
+                    </div>
+                    <div class="stock">
+                        <h1>{{ asset_list[0][0].name }}</h1>
+                        <p>{{ asset_list[0][1] }}</p>
+                    </div>
+                    <div class="stock">
+                        <h1>{{ asset_list[0][0].name }}</h1>
+                        <p>{{ asset_list[0][1] }}</p>
+                    </div>                                                    
                 </div>
 
             </div>

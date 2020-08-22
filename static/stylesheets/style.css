@@ -40,15 +40,19 @@ body {
     font-weight: 800;
 }
 
-.main :first-child {
-    margin: 10px;
-}
-.main h1 {
-    font-size: 20px;
-}
-
 .stock-grid {
     display: grid;
     grid-template-rows: auto auto;
     grid-template-columns: auto auto;
+    gap: 20px;
+    padding: 20px;
 }
+
+.stock > * {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+
