@@ -80,7 +80,7 @@ def load_data(ticker, start_date, end_date):
     df.columns = ['date', 'open', 'high', 'low', 'Close', 'adj Close', 'volume']
     df.date = df.date.apply(lambda x: datetime.strptime(x, r'%b %d, %Y'))
     df.replace('-', np.nan, inplace=True)
-    df.fillna(method='bfill', inplace=True)
+    df.fillna(method='ffill', inplace=True)
     df = df[pd.to_numeric(df['Close'], errors='coerce').notnull()]
     df.set_index('date', drop=True, inplace=True)
     df.sort_index(inplace=True)
