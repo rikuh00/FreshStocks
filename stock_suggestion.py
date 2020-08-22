@@ -6,6 +6,7 @@ dic = {"Music" : [["Spotify", "SPOT"], ["Tencent Music", "TME"], ["Vivendi", "VI
        "Sports" : [["Under Armour", "UA"], ["Electronic Arts Inc", "EA"], ["Dick's Sporting Goods", "DKS"]],
        "Technology" : [["Alphabet Inc", "GOOGL"], ["Tesla", "TSLA"], ["Amazon", "AMZN"]]
        }
+
 if __name__ == '__main__':
        for x in dic:
               print(x)
