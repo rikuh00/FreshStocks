@@ -29,6 +29,13 @@ class Asset():
         self.ema = self.price[["close"]].copy().ewm(span=10).mean()
         self.ema.rename(columns={'close': 'ema_value'}, inplace=True)
 
+    def exp_ma_strat(self): #REQUIRES FIXING
+        signals = self.price[["close"]].copy()
+        signals["ema_value"] = set_ema
+        signals["position"] = np.where((signals['close'][-3] > self.ema["ema_value"][-3]) &
+                                       (print("{:.2f}".format(round(signals["close"]*1.01, 2)))), "-1", "1")
+        return signals
+
     def simple_long_ma_strat(self):
         signals = self.price[['close']].copy()
         signals['position'] = np.where(self.ma['close'] > self.ma['long_ma'], 1, 0)
@@ -46,12 +53,6 @@ class Asset():
         signals['position'] = np.where(self.bollinger['close'] > self.bollinger['u_lim'], 1, 
                                        np.where(self.bollinger['close'] < self.bollinger['l_lim'], -1, 0))
         signals['position'] = signals['position'].diff() #1 for buy, -1 for sell
-        return signals
-
-    def exp_ma_strat(self): #REQUIRES FIXING
-        signals = self.price[["close"]].copy()
-        signals["ema"] = self.ema.copy()
-        signals["position"] = np.where((signals['close'] > self.ema["ema_value"]), "Sell", "Buy")
         return signals
 
     def execute_strats(self, initial_cash):
@@ -97,3 +98,7 @@ class Asset():
                 print('Buy at ${:.2f}'.format(l_lim))
             else:
                 print('Sell at ${:.2f}'.format(u_lim))
+
+
+data = Asset("TESLA", "TSLA")
+print(data.exp_ma_strat())
