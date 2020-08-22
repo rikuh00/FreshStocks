@@ -78,7 +78,7 @@ class Asset():
         strat_dict = {self.simple_long_ma_strat:'Long MA', self.golden_cross_strat: 'Golden Cross', 
                         self.bollinger_strat: 'Bollinger', self.exp_ma_strat: 'Exponential WA'}
         strat = None
-        final_return = None
+        final_std = None
         final_signal = None
 
         for _strat in strat_dict:
@@ -88,10 +88,11 @@ class Asset():
                 cash = cash_list[i-1] - (_signal.close[i] * _signal.position[i]) #reduces/increases cash for buy/sell
                 cash_list.append(cash)
             _signal['cash'] = cash_list
-            _return = _signal['cash'].iloc[-1] + ((_signal['close'] * _signal['position']).iloc[-1])
-            print('{}: ${:.2f}'.format(strat_dict[_strat], _return))
-            if final_return is None or _return > final_return: #updating these variables to reflect the best strategy
-                    final_return = _return
+            _signal['total'] = _signal['cash'].iloc[-1] + ((_signal['close'] * _signal['position']).iloc[-1])
+            _std = _signal.total.std()
+            print('{}: {:.2f}'.format(strat_dict[_strat], _std))
+            if final_std is None or _std < final_std: #updating these variables to reflect the best strategy
+                    final_std = _std
                     final_signal = _signal
                     strat = strat_dict[_strat]
 
