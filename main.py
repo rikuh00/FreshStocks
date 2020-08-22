@@ -6,5 +6,6 @@ if __name__ == '__main__':
     lulu = Asset('Lululemon','LULU', start_date, end_date)
     print(lulu.name)
     #print(lulu.close.tail())
-    lulu.set_bollinger()
+    lulu.set_ma()
+    lulu.simple_long_ma()
     #print(lulu.ma.tail())

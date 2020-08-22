@@ -1,3 +1,4 @@
+import numpy as np
 from datetime import datetime as dt, timedelta
 
 from load_data import load_data
@@ -23,3 +24,10 @@ class Asset():
         self.ma = self.price[['close']].copy()
         self.ma['short_ma'] = self.ma[['close']].rolling('{}D'.format(self.short_avg)).mean() #short MA
         self.ma['long_ma'] = self.ma[['close']].rolling('{}D'.format(self.long_avg)).mean() #long MA
+
+    def simple_long_ma(self):
+        signals = self.price[['close']].copy()
+        signals['position'] = np.where(self.ma['close'] > self.ma['long_ma'], 1, 0)
+        signals['position'] = signals['position'].diff()
+        print(signals.head())
+        print(self.ma.head())
