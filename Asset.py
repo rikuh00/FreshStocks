@@ -18,7 +18,7 @@ class Asset():
         std = self.bollinger.ma.std()
         self.bollinger['u_lim'] = self.bollinger.ma + (std * std_limit)
         self.bollinger['l_lim'] = self.bollinger.ma - (std * std_limit)
-        print(self.bollinger.head())
+
     def set_ma(self):
         self.ma = self.price[['close']].copy()
         self.ma['short_ma'] = self.ma[['close']].rolling('{}D'.format(self.short_avg)).mean()
