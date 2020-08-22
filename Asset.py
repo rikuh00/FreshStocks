@@ -38,19 +38,6 @@ class Asset():
         signals['position'] = np.where(self.ema['close'] > self.ema['ema'], 1, 0)
         signals['position'] = signals['position'].diff() #1 for buy, -1 for sell
         return signals
-        '''
-        if (signals['close'][-5] > self.ema['ema'][-5]) and (signals['close'][-1] < self.ema['ema'][-1]):
-            signals['position'] = -1
-        elif (signals['close'][-5] < self.ema['ema'][-5]) and (signals['close'][-1] > self.ema['ema'][-1]):
-            signals['position'] = 1
-        elif (signals['close'][-5] - self.ema['ema'][-5]) >= (signals['close'][-1] - self.ema['ema'][-1]):
-            signals['position'] = 1
-        elif (signals['close'][-5] - self.ema['ema'][-5]) < (signals['close'][-1] - self.ema['ema'][-1]):
-            signals['position'] = -1
-        else:
-            signals['position'] = 0
-        '''
-        return signals
 
     def simple_long_ma_strat(self):
         signals = self.price[['close']].copy()
