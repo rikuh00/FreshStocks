@@ -8,7 +8,7 @@ class Asset():
     window = 365
     def __init__(self, name, ticker, start_date=dt.today()-timedelta(days=(long_avg + window)), end_date=dt.today()):
         self.price = load_data(ticker, start_date, end_date) #data on the price (high, low, and close)
-        self.name = name #name of the stock (e.g. "Apple")
+        self.name = name #name of the stock (e.g. 'Apple')
 
     def set_bollinger(self):
         bollinger_avg = 20 #number of days for the moving average
@@ -26,22 +26,28 @@ class Asset():
         self.ma['long_ma'] = self.ma[['close']].rolling('{}D'.format(self.long_avg)).mean() #long MA
 
     def set_ema(self):
-        self.ema = self.price[["close"]].copy().ewm(span=10).mean()
-        self.ema.rename(columns={'close': 'ema_value'}, inplace=True)
+        look_back = 10
+        self.ema = self.price[['close']].copy().ewm(span=look_back).mean() #Exponential WA
+        self.ema.rename(columns={'close': 'ema'}, inplace=True)
+        self.ema = self.ema.join(self.price[['close']])
 
     def exp_ma_strat(self):
-        signals = self.price[["close"]].copy()
-        signals["ema_value"] = self.ema["ema_value"].copy()
-        if (signals['close'][-5] > self.ema["ema_value"][-5]) and (signals['close'][-1] < signals["ema_value"][-1]):
-            signals["position"] = -1
-        elif (signals['close'][-5] < self.ema["ema_value"][-5]) and (signals['close'][-1] > signals["ema_value"][-1]):
-            signals["position"] = 1
-        elif (signals['close'][-5] - self.ema["ema_value"][-5]) >= (signals['close'][-1] - signals["ema_value"][-1]):
-            signals["position"] = 1
-        elif (signals['close'][-5] - self.ema["ema_value"][-5]) < (signals['close'][-1] - signals["ema_value"][-1]):
-            signals["position"] = -1
+        signals = self.price[['close']].copy()
+        signals['position'] = np.where(self.ema['close'] > self.ema['ema'], 1, 0)
+        signals['position'] = signals['position'].diff() #1 for buy, -1 for sell
+        return signals
+        '''
+        if (signals['close'][-5] > self.ema['ema'][-5]) and (signals['close'][-1] < self.ema['ema'][-1]):
+            signals['position'] = -1
+        elif (signals['close'][-5] < self.ema['ema'][-5]) and (signals['close'][-1] > self.ema['ema'][-1]):
+            signals['position'] = 1
+        elif (signals['close'][-5] - self.ema['ema'][-5]) >= (signals['close'][-1] - self.ema['ema'][-1]):
+            signals['position'] = 1
+        elif (signals['close'][-5] - self.ema['ema'][-5]) < (signals['close'][-1] - self.ema['ema'][-1]):
+            signals['position'] = -1
         else:
-            signals["position"] = 0
+            signals['position'] = 0
+        '''
         return signals
 
     def simple_long_ma_strat(self):
@@ -63,9 +69,12 @@ class Asset():
         signals['position'] = signals['position'].diff() #1 for buy, -1 for sell
         return signals
 
-    #ADD EXPONENTIAL MA
-    def execute_strats(self, initial_cash):
-        strat_dict = {self.simple_long_ma_strat:'Long MA', self.golden_cross_strat: 'Golden Cross', self.bollinger_strat: 'Bollinger'}
+    def find_best_strat(self, initial_cash):
+        self.set_ma()
+        self.set_bollinger()
+        self.set_ema()
+        strat_dict = {self.simple_long_ma_strat:'Long MA', self.golden_cross_strat: 'Golden Cross', 
+                        self.bollinger_strat: 'Bollinger', self.exp_ma_strat: 'Exponential WA'}
         strat = None
         final_return = None
         final_signal = None
@@ -78,6 +87,7 @@ class Asset():
                 cash_list.append(cash)
             _signal['cash'] = cash_list
             _return = _signal['cash'].iloc[-1] + ((_signal['close'] * _signal['position']).iloc[-1])
+            print('{}: ${:.2f}'.format(strat_dict[_strat], _return))
             if final_return is None or _return > final_return: #updating these variables to reflect the best strategy
                     final_return = _return
                     final_signal = _signal
@@ -89,26 +99,52 @@ class Asset():
             curr_price = self.ma.close.iloc[-1]
             avg = self.ma.long_ma.iloc[-1]
             if curr_price > avg:
-                print('Sell {} at ${:.2f}'.format(self.name, avg))
+                return 'sell', avg
             elif curr_price < avg:
-                print('Buy {} at ${:.2f}'.format(self.name, avg))
+                return 'buy', avg
         
         elif strat == 'Golden Cross':
             curr_price = self.ma.close.iloc[-1]
             long_avg = self.ma.long_ma.iloc[-1]    
             short_avg = self.ma.short_ma.iloc[-1]
-            print('Buy at ${:.2f} or Sell at ${:.2f}'.format(min(long_avg, short_avg), max(long_avg, short_avg)))
+            low_end = min(short_avg, long_avg)
+            high_end = max(short_avg, long_avg)
+            if abs (curr_price - high_end) < abs(curr_price - low_end):
+                return 'sell', high_end
+            else:
+                return 'buy', low_end
         
         elif strat == 'Bollinger':
             curr_price = self.bollinger.close.iloc[-1]
             u_lim = self.bollinger.u_lim.iloc[-1]    
             l_lim = self.bollinger.l_lim.iloc[-1]
-            if abs(curr_price - u_lim) > abs(curr_price - l_lim):
-                print('Buy at ${:.2f}'.format(l_lim))
+            if abs(curr_price - u_lim) < abs(curr_price - l_lim):
+                return 'sell', u_lim
             else:
-                print('Sell at ${:.2f}'.format(u_lim))
+                return 'buy', l_lim
+        
+        elif strat == 'Exponential WA':
+            curr_price = self.ema.close.iloc[-1]
+            price = curr_price #as a test
+            ### put in code to compure w/ EWA
+            if True: ###condition
+                return 'sell', price
+            else:
+                return 'buy', price
+
+    def execute_order(self, asset_level, initial_cash):
+        instruction, price = self.find_best_strat(initial_cash)
+        if instruction == 'sell':
+            if asset_level > 0:
+                print('Sell {} at ${:.2f}'.format(self.name, price)) 
+            else:
+                print('We suggest that you wait until prices drop to buy this security.')
+        elif instruction == 'buy':
+            if initial_cash > price:
+                num_shares = initial_cash // price
+                if num_shares > 1:
+                    print('Buy up to {} shares of {} at ${:.2f} each'.format(num_shares, self.name, price))
+                else:
+                    print('Buy 1 share of {} at ${:.2f}'.format(self.name, price))
 
 
-data = Asset("TESLA", "TSLA")
-data.set_ema()
-print(data.exp_ma_strat())
