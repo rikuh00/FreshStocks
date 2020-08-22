@@ -85,7 +85,7 @@ def load_data(ticker, start_date, end_date):
     df.set_index('date', drop=True, inplace=True)
     df.sort_index(inplace=True)
     df = df.astype(float)
-    df = df[['Close']]
+    df = df[['high','low','Close']]
     df.rename(columns={'Close':'close'}, inplace=True)
     return df
 
