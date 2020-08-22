@@ -88,9 +88,10 @@ class Asset():
                 cash = cash_list[i-1] - (_signal.close[i] * _signal.position[i]) #reduces/increases cash for buy/sell
                 cash_list.append(cash)
             _signal['cash'] = cash_list
-            _signal['total'] = _signal['cash'].iloc[-1] + ((_signal['close'] * _signal['position']).iloc[-1])
-            _std = _signal.total.std()
-            print('{}: {:.2f}'.format(strat_dict[_strat], _std))
+            _signal['cash'].iloc[-1] += (_signal.position.sum() * _signal['close'].iloc[-1])
+            _std = _signal.cash.std()
+            print(_signal.head())
+            print('{}: {}'.format(strat_dict[_strat], _std))
             if final_std is None or _std < final_std: #updating these variables to reflect the best strategy
                     final_std = _std
                     final_signal = _signal
