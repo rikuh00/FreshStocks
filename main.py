@@ -10,23 +10,21 @@ from stock_suggestion import interest_function
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config.from_object(Config)
-avail_cash = 0
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     form =  WelcomeForm()
     if form.validate_on_submit():
+        global avail_cash
         avail_cash = form.cash.data
         return redirect('/index')
     return render_template('home.html', title='Welcome!', form=form)
 
-    # don't need to test request.method == 'GET'
-    return render_template('survey.html')
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    initial_cash = 500
+    print(avail_cash)
     asset_list = [['Spotify', 'SPOT', 2], ['Snapchat', 'SNAP', 0], ['Lululemon', 'Lulu', 3], ['Fitbit', 'FIT', 2]]
-    asset_list = execute_order(initial_cash, asset_list)
+    asset_list = execute_order(avail_cash, asset_list)
 
     form = StockForm()
 
