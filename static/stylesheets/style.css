@@ -38,10 +38,11 @@ body {
 
 .stock-grid {
     display: grid;
-    grid-template-rows: auto auto;
+    grid-template-rows: minmax auto auto;
     grid-template-columns: auto auto;
     gap: 20px;
     padding: 20px;
+    grid-template-max
 }
 
 .interests-grid {
@@ -63,6 +64,9 @@ body {
     margin-right: 0px;
 }
 
+.stock {
+    max-width: 400px;
+}
 #interests, #home, #submit{
     background: black;
     border: none;

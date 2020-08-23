@@ -82,7 +82,7 @@ class Asset():
                     final_std = _std
                     final_signal = _signal
                     strat = strat_dict[_strat]
-            final_signal.to_csv('{}.csv'.format(self.ticker))
+            #final_signal.to_csv('{}.csv'.format(self.ticker))
 
         # Determining Buy/Sell Instructions based on the best strategy
         if strat == 'Long MA':
