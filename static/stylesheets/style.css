@@ -65,7 +65,7 @@ body {
 }
 
 .stock {
-    max-width: 400px;
+    width: 100%;
 }
 #interests, #home, #submit{
     background: black;
