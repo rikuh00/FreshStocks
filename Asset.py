@@ -11,6 +11,7 @@ class Asset():
     def __init__(self, name, ticker, start_date=dt.today()-timedelta(days=(long_avg + window)), end_date=dt.today()):
         self.price = load_data(ticker, start_date, end_date) #data on the price (high, low, and close)
         self.name = name #name of the stock (e.g. 'Apple')
+        self.ticker = ticker # ticker
 
     def set_bollinger(self):
         bollinger_avg = 20 #number of days for the moving average
@@ -81,6 +82,7 @@ class Asset():
                     final_std = _std
                     final_signal = _signal
                     strat = strat_dict[_strat]
+            final_signal.to_csv('{}.csv'.format(self.ticker))
 
         # Determining Buy/Sell Instructions based on the best strategy
         if strat == 'Long MA':
