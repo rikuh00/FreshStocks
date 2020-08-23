@@ -67,4 +67,10 @@ body {
     margin-right: 0px;
 }
 
+#interests, #home, #submit{
+    background: black;
+    border: none;
+    color: white;;
+    font-size: 20px;
+}
 

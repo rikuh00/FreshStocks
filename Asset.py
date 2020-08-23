@@ -77,15 +77,12 @@ class Asset():
             _signal['cash'] = cash_list
             _signal['cash'].iloc[-1] += (_signal.position.sum() * _signal['close'].iloc[-1])
             _std = _signal.cash.std()
-            print(_signal.head())
-            print('{}: {}'.format(strat_dict[_strat], _std))
             if final_std is None or _std < final_std: #updating these variables to reflect the best strategy
                     final_std = _std
                     final_signal = _signal
                     strat = strat_dict[_strat]
 
         # Determining Buy/Sell Instructions based on the best strategy
-        print('The best strategy is {}'.format(strat))
         if strat == 'Long MA':
             curr_price = self.ma.close.iloc[-1]
             avg = self.ma.long_ma.iloc[-1]

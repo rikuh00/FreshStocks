@@ -3,13 +3,24 @@ from flask import Flask, render_template, redirect
 from form_config import Config
 from execute_order import execute_order
 from stock_form import StockForm
+from welcome_form import WelcomeForm
 from stock_suggestion import interest_stocks
 from stock_suggestion import interest_function
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config.from_object(Config)
+avail_cash = 0
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    form =  WelcomeForm()
+    if form.validate_on_submit():
+        avail_cash = form.cash.data
+        return redirect('/index')
+    return render_template('home.html', title='Welcome!', form=form)
 
+    # don't need to test request.method == 'GET'
+    return render_template('survey.html')
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -48,6 +59,7 @@ def interests_page():
                            sports_list=sports_list,
                            technology_list=technology_list,
                            form=form)
+
 
 app.run(debug=True)
 
